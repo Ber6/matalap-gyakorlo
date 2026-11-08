@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Matematikai alapok – gyakorló tesztgyűjtemény</title>
+<style>
+:root{
+  --bg:#ffffff; --text:#1d2125; --muted:#6a737b; --line:#dee2e6;
+  --qbg:#e7f3f5; --info:#f8f9fa; --primary:#0f6cbf; --primary-h:#0c5aa0;
+  --sec:#ced4da; --sec-text:#1d2125; --pink:#eb66a2; --side:#f8f9fa;
+  --ok:#357a32; --bad:#ca3120; --okbg:#d7ebd5; --badbg:#f6d8d4;
+  --fb:#fcefdc; --fbline:#f5d9b4; --timer:#ca3120; --field:#ffffff; --fieldline:#8f959e;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#16191c; --text:#e4e7ea; --muted:#9aa3ab; --line:#353b41;
+    --qbg:#1c3036; --info:#202428; --primary:#5ea4ea; --primary-h:#7cb6ef;
+    --sec:#3a4047; --sec-text:#e4e7ea; --side:#1c1f23;
+    --ok:#7bc277; --bad:#f08a7c; --okbg:#1f3a20; --badbg:#432421;
+    --fb:#3a2f1d; --fbline:#5b4628; --timer:#f08a7c; --field:#24282c; --fieldline:#5b636b;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#16191c; --text:#e4e7ea; --muted:#9aa3ab; --line:#353b41;
+  --qbg:#1c3036; --info:#202428; --primary:#5ea4ea; --primary-h:#7cb6ef;
+  --sec:#3a4047; --sec-text:#e4e7ea; --side:#1c1f23;
+  --ok:#7bc277; --bad:#f08a7c; --okbg:#1f3a20; --badbg:#432421;
+  --fb:#3a2f1d; --fbline:#5b4628; --timer:#f08a7c; --field:#24282c; --fieldline:#5b636b;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{background:var(--bg);color:var(--text);font:15px/1.5 -apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif}
+button,select,input{font:inherit}
+:focus-visible{outline:3px solid #78a9e0;outline-offset:2px}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+
+.nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;display:flex;align-items:center;gap:12px;height:56px;padding:0 16px;background:var(--bg);border-bottom:1px solid var(--line)}
+.nav .brand{font-weight:600;font-size:16px}
+.burger{display:none;background:none;border:1px solid var(--line);border-radius:4px;color:var(--text);width:40px;height:36px;cursor:pointer}
+
+.wrap{display:flex;align-items:flex-start}
+aside{position:sticky;top:56px;width:270px;flex:none;height:calc(100vh - 56px);overflow:auto;background:var(--side);border-right:1px solid var(--line);padding:14px 0}
+aside h2{margin:0 0 6px;padding:0 18px;font-size:15px;color:var(--primary)}
+aside ul{list-style:none;margin:0;padding:0}
+aside li a,aside li span.lk{display:flex;justify-content:space-between;align-items:center;padding:9px 18px 9px 42px;color:var(--primary);text-decoration:none;font-size:15px}
+aside li a:hover{background:rgba(15,108,191,.08)}
+aside li a.cur{background:rgba(15,108,191,.14);font-weight:600}
+aside li span.lk{color:var(--muted)}
+.dot{font-size:12px;font-weight:600}
+.dot.full{color:var(--ok)} .dot.part{color:#c77c02}
+
+main{flex:1;min-width:0;padding:22px 34px 60px;max-width:1100px}
+.crumb{font-size:14px;color:var(--primary);margin-bottom:10px}
+.crumb span{color:var(--text)}
+.titlerow{display:flex;align-items:center;gap:16px;margin:4px 0 14px}
+.qicon{width:48px;height:48px;border-radius:6px;background:var(--pink);display:grid;place-items:center;flex:none}
+h1{margin:0;font-size:36px;line-height:1.1;color:var(--primary);font-weight:700}
+.btn{border:0;border-radius:4px;padding:9px 16px;cursor:pointer}
+.btn-sec{background:var(--sec);color:var(--sec-text)}
+.btn-pri{background:var(--primary);color:#fff}
+.btn-pri:hover{background:var(--primary-h)}
+:root[data-theme="dark"] .btn-pri{color:#0f1720}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .btn-pri{color:#0f1720}}
+.timerrow{display:flex;justify-content:flex-end;margin:18px 0 14px}
+.timer{border:1px solid var(--timer);padding:6px 10px;background:var(--bg)}
+.timer.low{background:var(--timer);color:#fff}
+
+.que{display:flex;gap:18px;align-items:flex-start}
+.info{width:130px;flex:none;background:var(--info);border:1px solid var(--line);border-radius:4px;padding:10px 12px;font-size:13px;line-height:1.45}
+.info .no{margin-bottom:6px}
+.info .no b{font-size:20px}
+.info .st{margin-bottom:6px}
+.info .fl{color:var(--primary);margin-top:6px}
+.content{flex:1;min-width:0}
+.form{background:var(--qbg);padding:20px 24px;border-radius:2px}
+.form p{margin:0 0 12px}
+.submitrow{display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap;margin-top:24px}
+
+.mrow{display:flex;align-items:center;gap:14px;margin:6px 0}
+.mrow .mq{min-width:110px;max-width:520px}
+.mrow.g{margin:4px 0}
+.mrow.g .mq{width:470px;max-width:100%}
+.ctl{display:flex;align-items:center;gap:8px}
+select{background:var(--field);color:var(--text);border:1px solid var(--fieldline);border-radius:4px;padding:7px 10px;min-width:140px;max-width:100%}
+select.is-ok,input.is-ok{border-color:var(--ok);background:var(--okbg)}
+select.is-bad,input.is-bad{border-color:var(--bad);background:var(--badbg)}
+.mk{font-weight:700;min-width:16px}
+.mk.ok{color:var(--ok)} .mk.bad{color:var(--bad)}
+
+.plab{margin:10px 0 6px}
+.opts{display:flex;flex-direction:column;gap:6px}
+.inl .opts{flex-direction:row;flex-wrap:wrap;gap:4px 18px}
+.opt{display:flex;align-items:center;gap:8px;padding:3px 6px;border-radius:3px;cursor:pointer}
+.opt input{margin:0;width:16px;height:16px;flex:none}
+.opt .let{min-width:20px}
+.opt.is-ok{background:var(--okbg)} .opt.is-bad{background:var(--badbg)}
+
+.num{display:flex;align-items:center;gap:8px;margin:10px 0}
+.num label{display:flex;align-items:center;gap:6px}
+.num input{background:var(--field);color:var(--text);border:1px solid var(--fieldline);border-radius:4px;padding:8px 10px;width:340px;max-width:60vw}
+.num.sm input{width:82px}
+.num.blk label{flex-direction:column;align-items:flex-start}
+
+.gr{display:block;width:100%;height:auto;background:#fff;border-radius:2px}
+.nlsvg{display:block;width:360px;max-width:100%;height:auto;background:#fff}
+table.mini{border-collapse:collapse;margin:6px 0 14px}
+table.mini td,table.mini th{padding:3px 18px 3px 0;text-align:left}
+.disp{margin:6px 0 12px}
+
+.outcome{margin-top:14px;background:var(--fb);border:1px solid var(--fbline);border-radius:2px;padding:14px 20px}
+.outcome h3{margin:10px 0 6px;font-size:15px}
+.outcome ul{margin:4px 0 10px;padding-left:20px}
+.outcome li{margin:3px 0}
+.scoreline{font-weight:600}
+
+.home h1{font-size:30px;margin-bottom:10px}
+.home p{max-width:68ch;margin:0 0 12px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-top:18px}
+.tile{display:block;border:1px solid var(--line);border-radius:4px;padding:12px 14px;text-decoration:none;color:var(--text);background:var(--info)}
+.tile b{display:block;color:var(--primary);font-size:18px}
+.tile small{color:var(--muted)}
+.tile.lock{opacity:.6}
+.tools{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
+
+@media (max-width:900px){
+  .burger{display:block}
+  aside{position:fixed;left:0;top:calc(56px + env(safe-area-inset-top,0px));height:calc(100% - 56px - env(safe-area-inset-top,0px));z-index:8;transform:translateX(-100%);transition:transform .2s;box-shadow:2px 0 10px rgba(0,0,0,.2)}
+  aside.open{transform:none}
+  main{padding:16px 14px 50px}
+  .que{flex-direction:column}
+  .info{width:100%;display:flex;flex-wrap:wrap;gap:4px 14px}
+  .info>div{margin:0!important}
+  .form{padding:16px 14px}
+  .mrow{flex-wrap:wrap}
+  h1{font-size:30px}
+}
+@media (prefers-reduced-motion:reduce){aside{transition:none}}
+</style>
+<script>
+window.MathJax={tex:{inlineMath:[['$','$']],displayMath:[['$$','$$']]},svg:{fontCache:'global'},startup:{typeset:true}};
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.min.js"></script>
+</head>
+<body>
+<header class="nav">
+  <button class="burger" id="burger" aria-label="Feladatlista megnyitása">☰</button>
+  <span class="brand">Matematikai alapok</span>
+</header>
+<div class="wrap">
+  <aside id="side" aria-label="Tesztgyűjtemény">
+    <h2>⌄ Tesztgyűjtemény</h2>
+    <ul id="list"></ul>
+  </aside>
+  <main id="main"></main>
+</div>
+<script>
+const PTS = 6, MINUTES = 12, L = 'abcdefghijklmnopqrstuvwxyz';
+
+/* grafikonok függvényei */
+const par = x => x*x + x - 2;
+const poly = x => 0.05*x*(x+3)*(x+2)*(x-1)*(x-3);
+const quad = x => 2*x*x - x + 1;
+const lin = x => 2*x + 3;
+const bell = x => (1 + 0.6*x*x)*Math.exp(-Math.pow(x,4)/4);
+const conc = x => 2.86 - 3.86*Math.exp(0.3*x);
+const at = (f, xs) => xs.map(x => [x, f(x)]);
+
+const G = {
+  exp:  {fns:[{f:x=>Math.exp(0.4*x)}], pts:[[0,1]]},
+  log:  {fns:[{f:x=>Math.log(x)+1.6, from:0.0004}], pts:[[Math.exp(-1.6),0]]},
+  sqrt: {fns:[{f:x=>1+Math.sqrt(x+2), from:-2}], pts:[[0,1+Math.SQRT2]]},
+  hyp:  {fns:[{f:x=>1+2/(x-1)}], pts:[[-1,0],[0,-1]]},
+  abs:  {fns:[{f:x=>2*Math.abs(x-1)+1}], pts:[[0,3],[1,1]]},
+  poly: {fns:[{f:poly}], pts:at(poly,[-3,-2.63,-2,-0.95,0,0.53,1,2.42,3])},
+  quad: {fns:[{f:quad}], pts:at(quad,[0,0.25])},
+  lin:  {fns:[{f:lin}], pts:[[-1.5,0],[0,3]]},
+  jump: {fns:[{f:x=>-x-1, to:0},{f:x=>x+1, from:0}], pts:[[-1,0],[0,0]]},
+  bell: {fns:[{f:bell}], pts:at(bell,[-0.93,0,0.93])},
+  conc: {fns:[{f:conc}], pts:[[-1,0],[0,-1]]}
+};
+const R = {
+  c: {fill:[{lo:par, hi:()=>9}], fns:[{f:par}], pts:[[-2,0],[1,0],[0,-2],[-0.5,-2.25]]},
+  b: {fill:[{lo:()=>-9, hi:x=>2*x-1}], fns:[{f:x=>2*x-1}]},
+  e: {fill:[{lo:()=>-9, hi:x=>Math.min(par(x),-1-x)}], fns:[{f:x=>Math.min(par(x),-1-x)}]},
+  d: {fill:[{lo:par, hi:x=>1-x}], fns:[{f:par,from:-3,to:1},{f:x=>1-x,from:-3,to:1}]}
+};
+
+/* feladatok */
+const INT = [']-∞;2] más jelölés szerint (-∞;2]', ']-2;2] más jelölés szerint (-2;2]', '[-2;2[ más jelölés szerint [-2;2)', '[-2;2]', '[-2;∞[ más jelölés szerint [-2;∞)', ']-∞;2[ más jelölés szerint (-∞;2)', ']-2;∞[ más jelölés szerint (-2;∞)', ']-2;2[ más jelölés szerint (-2;2)'];
+const TYPES = ['polinom','hiperbola','lineáris','gyök','exponenciális','másodfokú','logaritmus','abszolút érték'];
+
+const Q = [
+{id:'00.01', intro:'<p>Válassza ki az alább megadott intervallumok megfelelő jelölését!</p>',
+ parts:[{t:'match', opts:INT, rows:[['$-2\\le x<2$',2],['$-2\\lt x\\le 2$',1],['$x\\le 2$',0],['$-2\\le x\\le 2$',3],['$x<2$',5],['$-2\\lt x\\lt 2$',7],['$-2\\le x$',4],['$-2\\lt x$',6]]}],
+ expl:'Ha egyenlőség is megengedett ($\\le$, $\\ge$), a végpont benne van az intervallumban: szögletes zárójel „befelé” ([ ]). Szigorú egyenlőtlenségnél ($<$, $>$) a végpont nincs benne: „kifelé” fordított zárójel (] [), más jelöléssel kerek zárójel. A $\\pm\\infty$ mellett mindig nyitott a zárójel.'},
+
+{id:'00.02', intro:'<p>A részvénytőzsdén 12 vállalat részvényeit forgalmazzák. Azt tervezem, hogy készítek egy befektetési portfóliót. Veszek összesen 6 db részvényt.</p><p>Szeretném átgondolni a kis portfólióm összetételét. (Csak egy részvényből vásároljak ennyi darabot? Jobb, ha mindegyik különböző (1-1 db)? Lehet, hogy egy vagy két papírból érdemes több darabot venni, de legyen hely másnak is?)</p><p>Milyen típusú problémáról van szó?</p>',
+ parts:[{t:'radio', inline:1, lab:'egyrészt:', opts:['permutáció','kombináció','variáció'], a:1},
+        {t:'radio', inline:1, lab:'másrészt:', opts:['ismétlés nélküli','ismétléses'], a:1},
+        {t:'num', blk:1, lab:'Hányféle különböző protfóliót lehet összeállítani?', a:12376}],
+ expl:'A sorrend nem számít, csak az, hogy miből hány darab van: <b>kombináció</b>. Egy papírból több darab is vehető: <b>ismétléses</b>. Képlet: $\\binom{n+k-1}{k}=\\binom{12+6-1}{6}=\\binom{17}{6}=12376$.'},
+
+{id:'01.01', intro:'<p>Melyik lenti kifejezés nem helyes?</p>',
+ parts:[{t:'radio', opts:['$2\\cdot\\sqrt{x}=\\sqrt{4x}$','$\\sqrt{2}\\cdot\\sqrt{x}=\\sqrt{2x}$','$\\frac{\\sqrt{2}}{\\sqrt{x}}=\\sqrt{\\frac{2}{x}}$','$\\sqrt{2}+\\sqrt{x}=\\sqrt{2+x}$'], a:3}],
+ expl:'Szorzásnál és osztásnál a gyökvonás tényezőnként elvégezhető ($2=\\sqrt4$, ezért $2\\sqrt x=\\sqrt{4x}$). Összegnél nem: $\\sqrt4+\\sqrt9=5$, de $\\sqrt{13}\\approx3{,}61$.'},
+
+{id:'01.02', intro:'<p>Jelenleg egy ország irányadó éves kamatrátája 5%.</p><p>Különböző események történnek a kamatlábbal, válassza ki, hogy mennyi lesz az új kamatláb az esemény után!</p>',
+ parts:[{t:'match', opts:['5,005%','4,95%','4%','4,99%','6%','4,995%','5,01%','5,05%'], rows:[
+   ['Az irányadó kamatráta 1‰-kel csökken.',5],['Az irányadó kamatráta 1%-kal csökken.',1],['Az irányadó kamatráta 1%-kal nő.',7],['Az irányadó kamatráta 1 százalékponttal nő.',4],
+   ['Az irányadó kamatráta 1 bázisponttal nő.',6],['Az irányadó kamatráta 1 bázisponttal csökken.',3],['Az irányadó kamatráta 1‰-kel nő.',0],['Az irányadó kamatráta 1 százalékponttal csökken.',2]]}],
+ expl:'A % és a ‰ a kamatláb <b>relatív</b> változása: $5\\%\\cdot1{,}01=5{,}05\\%$, $5\\%\\cdot0{,}999=4{,}995\\%$. A százalékpont és a bázispont <b>abszolút</b> változás: 1 bázispont = 0,01 százalékpont.'},
+
+{id:'01.03', intro:'<p>Bankbetétét az imént kötötte le 5% fix éves kamatos kamat mellett 4 évre. A lekötött bankbetét értéke jelenleg 1000 euró. Számítsa ki, hány euró lesz 4 év múlva a bankbetét értéke!</p>',
+ parts:[{t:'radio', opts:['1215.51','1184,49','1200','1050'], a:0}],
+ expl:'Kamatos kamat: $1000\\cdot1{,}05^4=1215{,}51$. Az 1200 egyszerű kamattal jönne ki, de kamatos kamatnál a kamat is kamatozik.'},
+
+{id:'01.04', intro:'<p>Számolja ki az alábbi számok súlyozott számtani átlagát! Az eredményt legalább 2 tizedesjegy pontossággal adja meg!</p><table class="mini"><tr><th>számok</th><th>súlyok</th></tr><tr><td>2</td><td>1</td></tr><tr><td>5</td><td>3</td></tr><tr><td>6</td><td>2</td></tr></table>',
+ parts:[{t:'num', a:29/6, tol:0.006, show:'4,83'}],
+ expl:'$\\bar x=\\dfrac{2\\cdot1+5\\cdot3+6\\cdot2}{1+3+2}=\\dfrac{29}{6}\\approx4{,}83$. A súlyok összegével osztunk, nem a számok darabszámával.'},
+
+{id:'02.01', intro:'<p>Adott az alábbi három algebrai tört:</p><p>$a=\\frac{1}{x+1}$<br>$b=\\frac{3}{y}$<br>$c=\\frac{y}{x^2+x}$</p><p>Válassza ki, hogy az alábbi kifejezések milyen műveletek elvégzése után keletkeznek!</p>',
+ parts:[{t:'match', opts:['a+b','a+c','a·b','c/a','a·c'], rows:[['$\\frac{y}{x}$',3],['$\\frac{y}{x^3+2x^2+x}$',4],['$\\frac{3}{xy+y}$',2],['$\\frac{3x+y+3}{xy+y}$',0],['$\\frac{x+y}{x^2+x}$',1]]}],
+ expl:'Kulcs a nevezők szorzattá alakítása: $x^2+x=x(x+1)$, $xy+y=y(x+1)$, $x^3+2x^2+x=x(x+1)^2$. Pl. $a\\cdot c=\\frac{1}{x+1}\\cdot\\frac{y}{x(x+1)}=\\frac{y}{x(x+1)^2}$ és $\\frac{c}{a}=\\frac{y}{x(x+1)}\\cdot(x+1)=\\frac{y}{x}$.'},
+
+{id:'02.02', intro:'<p>Az alul látható algebrai törtek egyszerűsítésére tett kísérletek közül csak bizonyosak helyesek. Jelölje be a helyes egyszerűsítéseket!</p>',
+ parts:[{t:'check', a:[0,2,4,6], opts:[
+  '$\\frac{4x-x^3}{4-4x+x^2}=\\frac{x(4-x^2)}{(2-x)^2}=\\frac{x(2-x)(2+x)}{(2-x)^2}=\\frac{x(2+x)}{2-x}$',
+  '$\\frac{5^5\\cdot1^x}{5^3}=\\frac{1^5\\cdot1^x}{1^3}$',
+  '$\\frac{2^{26}-2^{23}}{2^{26}+2^{23}}=\\frac{2^3-1}{2^3+1}=\\frac{7}{9}$',
+  '$\\frac{1}{x+1}\\cdot\\frac{(x+1)^2}{y+1}=\\left(\\frac{1}{x+1}\\right)^2\\cdot\\frac{(x+1)^2}{y+1}=\\frac{1}{(x+1)^2}\\cdot\\frac{(x+1)^2}{y+1}=\\frac{1}{1}\\cdot\\frac{1}{y+1}=\\frac{1}{y+1}$',
+  '$\\frac{2x^2-5yz+10xz-xy}{x+5z}=\\frac{x(2x-y)+5z(2x-y)}{x+5z}=\\frac{(2x-y)(x+5z)}{x+5z}=2x-y$',
+  '$\\frac{\\pi^2+4\\pi+4}{\\pi^2-4}=\\frac{4\\pi+4}{-4}=\\frac{\\pi}{-1}=-\\pi$',
+  '$\\frac{1}{x+1}\\cdot\\frac{(x+1)^2}{y+1}=\\frac{1}{1}\\cdot\\frac{x+1}{y+1}=\\frac{x+1}{y+1}$',
+  '$\\frac{2x^2-5yz+10xz-xy}{x+5z}=\\frac{2x-5yz+10z-y}{5z}=\\frac{2x-y+2-y}{1}=2x-2y-2$']}],
+ expl:'Csak közös <b>szorzótényezővel</b> szabad egyszerűsíteni, összegből tagot kihúzni nem (b, f, h hibás). A d-ben $\\frac{1}{x+1}\\ne\\left(\\frac{1}{x+1}\\right)^2$. Az f helyesen: $\\frac{(\\pi+2)^2}{(\\pi+2)(\\pi-2)}=\\frac{\\pi+2}{\\pi-2}$.'},
+
+{id:'02.03', intro:'<p>Mennyi az alábbi számsorozat határértéke? (A végtelen helyett 8888-at, a mínusz végtelen helyett -8888-at írjon!)</p><div class="disp">$$\\lim_{n\\to\\infty}\\frac{4n^3-2n^2+n+1}{2n^3-2}=$$</div>',
+ parts:[{t:'num', a:2}],
+ expl:'A számláló és a nevező foka egyenlő (3), ezért a határérték a főegyütthatók hányadosa: $\\frac{4}{2}=2$. Ha a nevező foka nagyobb: 0; ha a számlálóé: $\\pm\\infty$ (8888 vagy −8888).'},
+
+{id:'03.01', intro:'<p>Nevezze meg az alábbi grafikonokhoz tartozó függvénytípusokat!</p>',
+ parts:[{t:'match', opts:TYPES, rows:[[G.exp,4],[G.log,6],[G.sqrt,3],[G.hyp,1],[G.abs,7],[G.poly,0],[G.quad,5],[G.lin,2]]}],
+ expl:'Exponenciális: vízszintes aszimptota, az y-tengelyt 1-nél metszi. Logaritmus: függőleges aszimptota, lassan nő. Gyök: egy pontból indul, és ott véget ér. Hiperbola: két ág, két aszimptota. Másodfokú: egyetlen csúcs (parabola); polinom: több hullám.'},
+
+{id:'04.01', intro:'<p>Az alábbi grafikonok különböző függvénytulajdonságokat szemléltetnek. Párosítsa össze a grafikonokat a tulajdonságnevekkel!</p>',
+ parts:[{t:'match', opts:['konkáv','aszimptota','szakadási hely','konvex','szigorúan monoton növekvő'], rows:[[G.jump,2],[G.quad,3],[G.bell,1],[G.conc,0],[G.lin,4]]}],
+ expl:'Konvex: a görbe két pontját összekötő húr a görbe <b>felett</b> halad (tál). Konkáv: a húr a görbe <b>alatt</b> (fordított tál). A harang alakú görbe mindkét irányban az $y=0$ egyeneshez simul: aszimptota. A két darabból álló egyenes $x=0$-nál ugrik: szakadási hely.'},
+
+{id:'04.02', intro:'<p>Adott a következő függvény:</p><p>$y=\\sqrt{x}$ &nbsp;&nbsp;&nbsp; ahol $x\\ge 0$</p><p>Hajtsa végre a következő transzformációkat rajta:</p><ul><li>függőleges nyújtás: $\\cdot 3$</li><li>függőleges eltolás: $8$</li><li>vízszintes eltolás: $6$</li><li>tükrözés: függőleges (x-tengelyre való tükrözés)</li></ul><p>$y=a\\sqrt{b(x+c)}+d$ &nbsp;&nbsp;&nbsp; ahol $b\\in\\{-1;1\\}$</p><p>Az $a$, $b$, $c$ és $d$ paraméterek milyen értéke eredményezi a fenti transzformációkat?</p>',
+ parts:[{t:'num', sm:1, lab:'$a=$', a:-3},{t:'num', sm:1, lab:'$b=$', a:1},{t:'num', sm:1, lab:'$c=$', a:-6},{t:'num', sm:1, lab:'$d=$', a:8}],
+ expl:'$y=-3\\sqrt{x-6}+8$. A nyújtás (·3) és az x-tengelyre tükrözés együtt $a=-3$. Vízszintes tükrözés nincs: $b=1$. 6-tal jobbra tolás: $x\\to x-6$, tehát $c=-6$. Felfelé 8: $d=8$.'},
+
+{id:'04.03', intro:'<p>Mi az $f$ függvény inverzének értéke a 8 helyen?</p><p>$f(x)=3x-4$</p><p>Az eredményt két tizedesjegy pontossággal adja meg!</p>',
+ parts:[{t:'num', a:4, show:'4,00'}],
+ expl:'$f^{-1}(8)$ az az $x$, amire $3x-4=8$, vagyis $x=4$. Általánosan $f^{-1}(x)=\\frac{x+4}{3}$.'},
+
+{id:'05.01', intro:'<p>Oldja meg az alábbi egyenletet!</p><p>$3^{x+1}=9$</p>',
+ parts:[{t:'num', a:1}],
+ expl:'$9=3^2$, tehát $x+1=2$, így $x=1$.'},
+
+{id:'05.02', intro:'<p>Adott a következő egyenlőtlenség:</p><p>$\\log_4\\left(\\frac{170}{x}-1\\right)<-2$</p><p>Számolja ki az egyenlőtlenség megoldását jelentő intervallum két végpontját, $x_1$-et és $x_2$-t (ahol $x_1\\lt x_2$)!</p>',
+ parts:[{t:'num', sm:1, lab:'$x_1=$', a:160},{t:'num', sm:1, lab:'$x_2=$', a:170},
+        {t:'radio', inline:1, lab:'Intervallum típusa:', opts:['$]x_1,x_2]$','$[x_1,x_2]$','$]x_1,x_2[$','$[x_1,x_2[$'], a:2}],
+ expl:'Értelmezési tartomány: $\\frac{170}{x}-1>0$, vagyis $0\\lt x\\lt 170$. A 4-es alap $>1$, a reláció marad: $\\frac{170}{x}-1<4^{-2}=\\frac{1}{16}$, így $\\frac{170}{x}<\\frac{17}{16}$, tehát $x>160$. Együtt: $160\\lt x\\lt 170$, mindkét vég nyitott.'},
+
+{id:'05.03', intro:'<p>$f(x)=2x^2+2x-4=a(x-x_1)(x-x_2)$</p><p>Adja meg az $f$ függvény gyöktényezős alakjában az $a$, $x_1$ és $x_2$ értékét!</p><p>A beíráskor ügyeljen az előjelekre és, hogy ne cserélje fel $x_1$-et és $x_2$-t! ($x_1\\le x_2$)</p>',
+ parts:[{t:'num', sm:1, lab:'$a=$', a:2},{t:'num', sm:1, lab:'$x_1=$', a:-2},{t:'num', sm:1, lab:'$x_2=$', a:1}],
+ expl:'$2x^2+2x-4=2(x^2+x-2)=2(x+2)(x-1)$. Figyelj: $(x+2)=(x-(-2))$, ezért $x_1=-2$.'},
+
+{id:'06.01', intro:'<p>Az alábbi ábrákon egyenlőtlenségek és egyenlőtlenségrendszerek megoldásai láthatók. Válassza ki mindegyik ábrához a megfelelő egyenlőtlenség(rendszer) betűjelét!</p><p>a<br>$3(x+2)(x-1)\\le 0$</p><p>b<br>$y+1\\le 2x$</p><p>c<br>$2\\ge x^2+x-y$</p><p>d<br>$2\\ge x^2+x-y$<br>$x+y\\le 1$</p><p>e<br>$2\\le x^2+x-y$<br>$x+y\\le -1$</p>',
+ parts:[{t:'match', opts:['a','e','b','d','c'], rows:[[{nl:[-2,1]},0],[R.c,4],[R.b,2],[R.e,1],[R.d,3]]}],
+ expl:'Rendezd $y$-ra! c: $y\\ge x^2+x-2$ (parabola felett). b: $y\\le 2x-1$ (egyenes alatt). d: parabola felett <b>és</b> $y\\le 1-x$ alatt, ez zárt alakzat. e: parabola alatt <b>és</b> $y\\le -1-x$ alatt, ez lefelé végtelen. a: $-2\\le x\\le1$ a számegyenesen.'},
+
+{id:'06.02', intro:'<p>$2x+3y=9$</p><p>$x-4y=-1$</p><p>Oldja meg a fenti egyenletrendszert!</p>',
+ parts:[{t:'num', sm:1, lab:'$x=$', a:3},{t:'num', sm:1, lab:'$y=$', a:1}],
+ expl:'A második egyenletből $x=4y-1$. Behelyettesítve: $2(4y-1)+3y=9$, $11y=11$, $y=1$, és $x=3$.'},
+
+{id:'07.01', intro:'<p>Adott a következő három polinom:</p><p>$P_1(x)=3x^2-x+4$<br>$P_2(x)=x^3+x^2$<br>$P_3(x)=x^2-1$</p><p>Válassza ki, hogy az alábbi kifejezések milyen műveletek elvégzése után keletkeznek!</p>',
+ parts:[{t:'match', opts:['P₂(x)-P₃(x)','P₂(x)/P₃(x)','P₁(x)+P₂(x)','P₂(x)/P₁(x)','P₃(x)²','P₁(x)·P₃(x)'], rows:[['$x^3+4x^2-x+4$',2],['$x^3+1$',0],['$3x^4-x^3+x^2+x-4$',5],['$x^4-2x^2+1$',4],['$\\frac{x^2}{x-1}$',1]]}],
+ expl:'$P_2-P_3=x^3+x^2-x^2+1=x^3+1$. $\\frac{P_2}{P_3}=\\frac{x^2(x+1)}{(x-1)(x+1)}=\\frac{x^2}{x-1}$. $P_3^2=(x^2-1)^2=x^4-2x^2+1$. A fokszám gyorsan elárulja: 4. fokú csak szorzásból jöhet.'},
+
+{id:'07.02', intro:'<p>Jelölje be azokat a kifejezéseket, amelyek ön szerint szorzattá alakíthatók kiemelés vagy nevezetes azonosság segítségével az egyenlőségjelek után sugalmazott módon. (A triviális, $a=1\\cdot a$ alakú átalakítás nem számít szorzattá alakításnak, illetve az átalakítás után nem lehet tört egyetlen szám sem tényezőként, együtthatóként vagy tagként.)</p>',
+ parts:[{t:'check', a:[0,1,2,4,5,6,7,8,10,11,12,13], opts:[
+  '$2^{26}-2^{23}=2^{23}(\\dots)$','$9+6y+y^2=(a+b)^2$','$8-y^3=(a-b)(\\dots)$','$x+1=(a+b)^2$','$x^3-9x^2+27x-27=(a-b)^3$',
+  '$12=3\\cdot(\\dots)$','$x^2-3=(a-b)(\\dots)$','$2x^2-5yz+10xz-xy=2x(\\dots)+\\dots=(\\dots)(\\dots)$','$9+6y+3y^2=3\\cdot(\\dots)$','$7=3\\cdot(\\dots)$',
+  '$x^6-y^6=(a-b)(\\dots)$','$x^2-4=(a+b)(a-b)$','$9-y^3=(a-b)(\\dots)$','$1-q^n=(a-b)(\\dots)$ ahol $n\\in N$','$x^6-y^5=(a-b)(\\dots)$']}],
+ expl:'Nem alakítható: d ($x+1$ nem teljes négyzet), j ($7=3\\cdot\\frac73$, tört lenne), o ($x^6-y^5$ csak törtkitevővel). A g ($x^2-3=(x-\\sqrt3)(x+\\sqrt3)$) és az m ($9-y^3$, $a=\\sqrt[3]{9}$) gyökkel működik; a szöveg csak a törtet tiltja, ezért ezeket helyesnek vettük. Ha az oktató csak egész együtthatót fogad el, ez a kettő kiesik.'},
+
+{id:'07.03', intro:'<p>$f(x)=3x^2+12x+11=a(x+b)^2+c$</p><p>Adja meg az $f$ függvény teljes négyzet alakjában az $a$, $b$ és $c$ értékét!</p><p>A beíráskor ügyeljen az előjelekre!</p>',
+ parts:[{t:'num', sm:1, lab:'$a=$', a:3},{t:'num', sm:1, lab:'$b=$', a:2},{t:'num', sm:1, lab:'$c=$', a:-1}],
+ expl:'$3(x^2+4x)+11=3[(x+2)^2-4]+11=3(x+2)^2-1$.'},
+
+{id:'08.01', intro:'<p>Mennyi az alábbi függvény határértéke a kérdéses helyen? (A végtelen helyett 8888-at, a mínusz végtelen helyett -8888-at írjon!)</p><div class="disp">$$\\lim_{x\\to\\infty}\\frac{1}{x^2+3}=$$</div>',
+ parts:[{t:'num', a:0}],
+ expl:'A nevező a végtelenbe tart, a számláló állandó, így a tört $0$-hoz tart.'},
+
+{id:'08.02', intro:'<p>$f(x)=-2x^3+3x^2+x+12$</p><p>Mennyi az alábbi függvény deriváltja az $x=1$ helyen? (A végtelen helyett 8888-at, a mínusz végtelen helyett -8888-at írjon!)</p><p>$f^{\\prime}(1)=$</p>',
+ parts:[{t:'num', a:1}],
+ expl:'$f^{\\prime}(x)=-6x^2+6x+1$, így $f^{\\prime}(1)=-6+6+1=1$.'},
+
+{id:'09.01', intro:'<p>$f(x)=x^2+\\frac{1}{2}$<br>$g(x)=e^x-1$</p><p>Az $f$ és $g$ függvények összege vagy különbsége, szorzata, hányadosa valamint belőlük képezett összetett fügvényeként állnak elő az alábbi függvények. Számolja ki e függvények deriváltjainak értékét az $x=0$ helyen!</p>',
+ parts:[{t:'match', opts:['2','0','0,5','1'], rows:[['$h_1(x)=f(x)+g(x)\\quad h_1^{\\prime}(0)=$',3],['$h_4(x)=g(f(x))\\quad h_4^{\\prime}(0)=$',1],['$h_3(x)=\\frac{g(x)}{f(x)}\\quad h_3^{\\prime}(0)=$',0],['$h_2(x)=f(x)g(x)\\quad h_2^{\\prime}(0)=$',2]]}],
+ expl:'$f(0)=\\frac12$, $f^{\\prime}(0)=0$, $g(0)=0$, $g^{\\prime}(0)=1$. Összeg: $0+1=1$. Szorzat: $f^{\\prime}g+fg^{\\prime}=0+\\frac12=0{,}5$. Hányados: $\\frac{g^{\\prime}f-gf^{\\prime}}{f^2}=\\frac{1/2}{1/4}=2$. Összetett: $g^{\\prime}(f(0))\\cdot f^{\\prime}(0)=e^{1/2}\\cdot0=0$.'},
+
+{id:'09.02', intro:'<p>$f(x)=-3x^4+2x^3-x^2+3x+11$</p><p>Számolja ki az $f$ függvény második deriváltjának értékét az $x=-1$ helyen!</p><p>$f^{\\prime\\prime}(-1)=$</p>',
+ parts:[{t:'num', a:-50}],
+ expl:'$f^{\\prime}(x)=-12x^3+6x^2-2x+3$, $f^{\\prime\\prime}(x)=-36x^2+12x-2$, így $f^{\\prime\\prime}(-1)=-36-12-2=-50$.'},
+
+{id:'10.01', intro:'<p>A termékünkből értékesített mennyiséget jelölje $x$.</p><p>Termékünk ára a következőképpen függ a mennyiségtől: $p(x)=675-66x$.</p><p>A termelés költsége a következőképpen függ a mennyiségtől: $C(x)=15x+150$</p><p>Írja fel a termék bevételi függvényét ($R(x)$), majd számolja ki, hogy mennyi bevétel származna 4 db termék eladásából!</p>',
+ parts:[{t:'num', sm:1, lab:'$R(4)=$', a:1644},{t:'num', sm:1, lab:'$x_{max}=$', a:5},{t:'num', sm:1, lab:'$P(x_{max})=$', a:1500}],
+ mid:{1:'<p style="margin-top:14px">Írja fel a termék profitfüggvényét ($P(x)$), majd határozza meg a profitmaximalizáló termelési mennyiséget ($x_{max}$) és a maximális profit értékét ($P(x_{max})$)!</p>'},
+ expl:'$R(x)=x\\cdot p(x)=675x-66x^2$, $R(4)=2700-1056=1644$. $P(x)=R(x)-C(x)=-66x^2+660x-150$. $P^{\\prime}(x)=-132x+660=0$, így $x=5$, és $P(5)=-1650+3300-150=1500$.'},
+
+{id:'10.02', intro:'<p>Adott a következő függvény: $f(x)=\\ln x-\\frac{1}{2}x^2$.</p><p>Határozza meg a függvény szélsőértékhelyét ($x_1$) és szélsőértékét ($f(x_1)$)!</p>',
+ parts:[{t:'num', sm:1, lab:'$x_1=$', a:1},{t:'num', sm:1, lab:'$f(x_1)=$', a:-0.5, show:'−0,5'},
+        {t:'match', opts:['minimum','maximum'], rows:[['Milyen típusú szélsőérték van az $x_1$ helyen?',1]]}],
+ expl:'$f^{\\prime}(x)=\\frac1x-x=0$, így $x^2=1$, és mivel $x>0$, $x=1$. $f(1)=0-\\frac12=-0{,}5$. $f^{\\prime\\prime}(x)=-\\frac{1}{x^2}-1<0$, tehát maximum.'}
+];
+
+/* SVG grafikonok */
+let gid = 0;
+function graph(s){
+  if (s.nl) return numline(s.nl);
+  const S = 40, O = 160, X = x => O + x*S, Y = y => O - y*S, id = 'c' + (gid++);
+  let out = `<svg class="gr" viewBox="0 0 320 320" role="img" aria-label="Grafikon"><defs><clipPath id="${id}"><rect width="320" height="320"/></clipPath></defs><g clip-path="url(#${id})">`;
+  for (let k = -16; k <= 16; k++){
+    const r = k/4;
+    const c = k % 8 === 0 ? '#b5b5b5' : (k % 4 === 0 ? '#d4d4d4' : '#ececec');
+    out += `<line x1="${X(r)}" y1="0" x2="${X(r)}" y2="320" stroke="${c}"/><line x1="0" y1="${Y(r)}" x2="320" y2="${Y(r)}" stroke="${c}"/>`;
+  }
+  (s.fill||[]).forEach(f => {
+    const top = [], bot = [];
+    for (let i = 0; i <= 840; i++){
+      const x = -4.2 + i*0.01;
+      const lo = Math.max(f.lo(x), -6), hi = Math.min(f.hi(x), 6);
+      if (lo <= hi){ top.push(`${X(x).toFixed(1)},${Y(hi).toFixed(1)}`); bot.unshift(`${X(x).toFixed(1)},${Y(lo).toFixed(1)}`); }
+    }
+    out += `<polygon points="${top.concat(bot).join(' ')}" fill="#c0393b" fill-opacity=".55"/>`;
+  });
+  out += `<line x1="0" y1="${O}" x2="320" y2="${O}" stroke="#222" stroke-width="1.5"/><line x1="${O}" y1="0" x2="${O}" y2="320" stroke="#222" stroke-width="1.5"/>`;
+  [-4,-2,2,4].forEach(v => {
+    out += `<text x="${X(v)}" y="${O+16}" font-size="13" text-anchor="middle" fill="#333">${v}</text>`;
+    out += `<text x="${O-8}" y="${Y(v)+4}" font-size="13" text-anchor="end" fill="#333">${v}</text>`;
+  });
+  out += `<text x="${O-8}" y="${O+16}" font-size="13" text-anchor="end" fill="#333">0</text>`;
+  (s.fns||[]).forEach(fn => {
+    let d = '', pen = false;
+    const a = fn.from ?? -4.2, b = fn.to ?? 4.2;
+    for (let i = 0; ; i++){
+      let x = a + i*0.01; if (x > b) x = b;
+      const y = fn.f(x);
+      if (!isFinite(y) || Math.abs(y) > 7) pen = false;
+      else { d += (pen ? 'L' : 'M') + X(x).toFixed(1) + ' ' + Y(y).toFixed(1); pen = true; }
+      if (x >= b) break;
+    }
+    out += `<path d="${d}" fill="none" stroke="#c0393b" stroke-width="2.6" stroke-linejoin="round"/>`;
+  });
+  (s.pts||[]).forEach(p => out += `<circle cx="${X(p[0])}" cy="${Y(p[1])}" r="5" fill="#a9a9a9"/>`);
+  return out + '</g></svg>';
+}
+function numline([a,b]){
+  const X = v => 180 + v*57;
+  let o = `<svg class="nlsvg" viewBox="0 0 360 80" role="img" aria-label="Számegyenes"><line x1="8" y1="30" x2="340" y2="30" stroke="#222" stroke-width="1.5"/><polygon points="352,30 338,24 338,36" fill="#222"/>`;
+  [-2,0,2].forEach(v => o += `<line x1="${X(v)}" y1="25" x2="${X(v)}" y2="35" stroke="#222"/><text x="${X(v)}" y="54" font-size="14" text-anchor="middle" fill="#222">${v}</text>`);
+  o += `<line x1="${X(a)}" y1="30" x2="${X(b)}" y2="30" stroke="#c0393b" stroke-width="5" stroke-opacity=".7"/><circle cx="${X(a)}" cy="30" r="6" fill="#c0393b"/><circle cx="${X(b)}" cy="30" r="6" fill="#c0393b"/>`;
+  return o + `<text x="328" y="72" font-size="17" font-style="italic" fill="#222">x</text></svg>`;
+}
+
+/* megjelenítés és pontozás */
+const $ = s => document.querySelector(s);
+const OK = '✔', BAD = '✘';
+const slug = id => 'f' + id.replace('.', '-');
+let best = {};
+try { best = JSON.parse(localStorage.getItem('matalap-best') || '{}'); } catch(e) { best = {}; }
+function saveBest(id, sc){
+  if (best[id] == null || sc > best[id]) best[id] = sc;
+  try { localStorage.setItem('matalap-best', JSON.stringify(best)); } catch(e) {}
+}
+const fmt = n => (Math.round(n*100)/100).toString().replace('.', ',').replace('-', '−');
+const pts = n => n.toFixed(2).replace('.', ',');
+
+function typeset(el){
+  if (window.MathJax && MathJax.typesetPromise){
+    if (MathJax.typesetClear) MathJax.typesetClear([el]);
+    MathJax.typesetPromise([el]).catch(()=>{});
+  }
+}
+
+function sideList(curId){
+  $('#list').innerHTML = Q.map(q => {
+    const b = best[q.id];
+    const dot = b == null ? '' : `<span class="dot ${b >= PTS - 1e-9 ? 'full' : 'part'}">${pts(b)}</span>`;
+    return `<li><a href="#${slug(q.id)}" class="${q.id === curId ? 'cur' : ''}">${q.id}${dot}</a></li>`;
+  }).join('') + `<li><span class="lk">11.01 <span aria-label="zárolva">🔒</span></span></li>`;
+}
+
+function partHTML(p, i){
+  if (p.t === 'match') return `<div class="match">${p.rows.map((r, j) => {
+    const g = typeof r[0] !== 'string';
+    return `<div class="mrow${g ? ' g' : ''}"><div class="mq">${g ? graph(r[0]) : r[0]}</div><div class="ctl"><select data-p="${i}" data-r="${j}" aria-label="Válasz ${j+1}"><option value="-1">Választás...</option>${p.opts.map((o, k) => `<option value="${k}">${o}</option>`).join('')}</select><span class="mk"></span></div></div>`;
+  }).join('')}</div>`;
+  if (p.t === 'radio' || p.t === 'check'){
+    const type = p.t === 'radio' ? 'radio' : 'checkbox';
+    return `<div class="${p.inline ? 'inl' : ''}">${p.lab ? `<p class="plab">${p.lab}</p>` : ''}<div class="opts">${p.opts.map((o, k) =>
+      `<label class="opt"><input type="${type}" name="p${i}" value="${k}">${p.inline ? '' : `<span class="let">${L[k]}.</span>`}<span>${o}</span><span class="mk"></span></label>`).join('')}</div></div>`;
+  }
+  if (p.t === 'num') return `<div class="num${p.sm ? ' sm' : ''}${p.blk ? ' blk' : ''}"><label><span>${p.lab || 'Válasz'}</span><input type="text" inputmode="decimal" autocomplete="off" data-p="${i}"></label><span class="mk"></span></div>`;
+  return '';
+}
+
+function answerHTML(p){
+  if (p.t === 'match') return p.rows.map((r, j) => `<li>${typeof r[0] === 'string' ? r[0] : (j+1) + '. ábra'} → <b>${p.opts[r[1]]}</b></li>`).join('');
+  if (p.t === 'radio') return `<li>${p.lab ? p.lab + ' ' : ''}<b>${p.inline ? '' : L[p.a] + '. '}${p.opts[p.a]}</b></li>`;
+  if (p.t === 'check') return `<li>Helyes válaszok: <b>${p.a.map(k => L[k]).join(', ')}</b></li>`;
+  if (p.t === 'num') return `<li>${p.lab || 'Válasz:'} <b>${p.show || fmt(p.a)}</b></li>`;
+  return '';
+}
+
+function parseNum(s){
+  s = s.trim().replace(/\s/g, '').replace(',', '.').replace('−', '-');
+  if (!/^[-+]?(\d+\.?\d*|\.\d+)$/.test(s)) return null;
+  return parseFloat(s);
+}
+function mark(el, ok){ el.innerHTML = ok ? OK : BAD; el.className = 'mk ' + (ok ? 'ok' : 'bad'); }
+
+function grade(q, root){
+  const units = [];
+  q.parts.forEach((p, i) => {
+    if (p.t === 'match'){
+      p.rows.forEach((r, j) => {
+        const s = root.querySelector(`select[data-p="${i}"][data-r="${j}"]`);
+        const ok = +s.value === r[1];
+        s.disabled = true; s.classList.add(ok ? 'is-ok' : 'is-bad'); mark(s.nextElementSibling, ok);
+        units.push(ok ? 1 : 0);
+      });
+    } else if (p.t === 'radio' || p.t === 'check'){
+      const ins = [...root.querySelectorAll(`input[name="p${i}"]`)];
+      const right = p.t === 'radio' ? [p.a] : p.a;
+      const nW = p.opts.length - right.length;
+      let pos = 0, neg = 0;
+      ins.forEach((inp, k) => {
+        inp.disabled = true;
+        if (!inp.checked) return;
+        const ok = right.includes(k); if (ok) pos++; else neg++;
+        const lab = inp.closest('.opt'); lab.classList.add(ok ? 'is-ok' : 'is-bad'); mark(lab.querySelector('.mk'), ok);
+      });
+      units.push(p.t === 'radio' ? (pos ? 1 : 0) : Math.max(0, pos/right.length - (nW ? neg/nW : 0)));
+    } else if (p.t === 'num'){
+      const inp = root.querySelector(`input[data-p="${i}"]`);
+      const v = parseNum(inp.value);
+      const ok = v !== null && Math.abs(v - p.a) <= (p.tol ?? 0.005);
+      inp.readOnly = true; inp.classList.add(ok ? 'is-ok' : 'is-bad'); mark(inp.closest('.num').querySelector('.mk'), ok);
+      units.push(ok ? 1 : 0);
+    }
+  });
+  return units.reduce((a, b) => a + b, 0) / units.length * PTS;
+}
+
+let timerId = null;
+function stopTimer(){ if (timerId) clearInterval(timerId); timerId = null; }
+
+function openQuiz(q){
+  stopTimer();
+  sideList(q.id);
+  const next = Q[Q.indexOf(q) + 1];
+  const body = q.parts.map((p, i) => (q.mid && q.mid[i] ? q.mid[i] : '') + partHTML(p, i)).join('');
+  $('#main').innerHTML = `
+    <nav class="crumb">2026-2027/1 / KTK / Matematikai alapok (B25KOK15-2026271-KTK-matalaNB-GY-01) / <span>${q.id}</span></nav>
+    <div class="titlerow"><div class="qicon" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 12l3 3 5-6"/></svg></div><h1>${q.id}</h1></div>
+    <button class="btn btn-sec" id="back">Vissza</button>
+    <div class="timerrow"><div class="timer" id="timer" role="timer">Hátralévő idő 0:12:00</div></div>
+    <div class="que">
+      <div class="info"><div class="no"><b>1</b> kérdés</div><div class="st" id="st">Még nincs rá válasz</div><div id="gr">${pts(PTS)} pont szerezhető</div><div class="fl">⚐ A kérdés megjelölése</div></div>
+      <div class="content"><div class="form" id="form">${q.intro}${body}</div><div id="out"></div></div>
+    </div>
+    <div class="submitrow" id="actions"><button class="btn btn-pri" id="finish">Próbálkozás vége ...</button></div>`;
+  $('#back').onclick = () => { location.hash = ''; };
+  const end = Date.now() + MINUTES*60*1000;
+  const tick = () => {
+    const t = $('#timer'); if (!t) return stopTimer();
+    const left = Math.max(0, Math.round((end - Date.now())/1000));
+    const m = Math.floor(left/60), s = left % 60;
+    t.textContent = `Hátralévő idő 0:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    t.classList.toggle('low', left < 60);
+    if (left === 0) finish(q, next, true);
+  };
+  tick(); timerId = setInterval(tick, 1000);
+  $('#finish').onclick = () => finish(q, next, false);
+  window.scrollTo(0, 0);
+  closeSide();
+  typeset($('#main'));
+}
+
+function finish(q, next, timeout){
+  stopTimer();
+  const sc = grade(q, $('#form'));
+  saveBest(q.id, sc);
+  sideList(q.id);
+  $('#st').textContent = sc >= PTS - 1e-9 ? 'Helyes' : sc <= 1e-9 ? 'Nem helyes' : 'Részben helyes';
+  $('#gr').textContent = `${pts(sc)} pont a(z) ${pts(PTS)}-ból`;
+  const t = $('#timer'); t.classList.remove('low'); t.textContent = timeout ? 'Lejárt az idő' : 'Beküldve';
+  $('#out').innerHTML = `<div class="outcome"><div class="scoreline">Pont: ${pts(sc)} / ${pts(PTS)}</div><h3>A helyes válasz:</h3><ul>${q.parts.map(answerHTML).join('')}</ul><h3>Magyarázat</h3><p>${q.expl}</p></div>`;
+  $('#actions').innerHTML = `<button class="btn btn-sec" id="list2">Vissza a listához</button><button class="btn btn-sec" id="again">Újrapróbálkozás</button>${next ? `<button class="btn btn-pri" id="nx">Következő: ${next.id}</button>` : ''}`;
+  $('#list2').onclick = () => { location.hash = ''; };
+  $('#again').onclick = () => openQuiz(q);
+  if (next) $('#nx').onclick = () => { location.hash = slug(next.id); };
+  typeset($('#out'));
+}
+
+function home(){
+  stopTimer();
+  sideList(null);
+  const done = Q.filter(q => best[q.id] != null).length;
+  const sum = Q.reduce((a, q) => a + (best[q.id] || 0), 0);
+  $('#main').innerHTML = `
+    <nav class="crumb">2026-2027/1 / KTK / <span>Matematikai alapok (B25KOK15-2026271-KTK-matalaNB-GY-01)</span></nav>
+    <div class="home">
+      <h1>Tesztgyűjtemény – gyakorló</h1>
+      <p>Minden feladatszámhoz egy gyakorlófeladat, a valódi teszt felületéhez hasonló kinézettel. Egy feladatra 12 perc jut. A „Próbálkozás vége ...” gomb után látod a pontszámot, a helyes választ és a magyarázatot.</p>
+      <p>Tizedesvesszőt és pontot is elfogad. A legjobb eredményeid ebben a böngészőben megmaradnak: ${done}/${Q.length} feladat, összesen ${pts(sum)} / ${pts(Q.length*PTS)} pont.</p>
+      <div class="tools"><button class="btn btn-pri" id="start">Kezdés: ${Q[0].id}</button><button class="btn btn-sec" id="reset">Eredmények törlése</button></div>
+      <div class="grid">${Q.map(q => `<a class="tile" href="#${slug(q.id)}"><b>${q.id}</b><small>${best[q.id] == null ? 'Még nem próbáltad' : 'Legjobb: ' + pts(best[q.id]) + ' / ' + pts(PTS)}</small></a>`).join('')}<div class="tile lock"><b>11.01 🔒</b><small>Zárolva</small></div></div>
+    </div>`;
+  $('#start').onclick = () => { location.hash = slug(Q[0].id); };
+  $('#reset').onclick = () => { best = {}; try { localStorage.removeItem('matalap-best'); } catch(e) {} home(); };
+  closeSide();
+}
+
+function closeSide(){ $('#side').classList.remove('open'); }
+function route(){
+  const h = location.hash.slice(1);
+  const q = Q.find(q => slug(q.id) === h);
+  if (q) openQuiz(q); else home();
+}
+$('#burger').onclick = () => $('#side').classList.toggle('open');
+window.addEventListener('hashchange', route);
+route();
+</script>
+</body>
+</html>
